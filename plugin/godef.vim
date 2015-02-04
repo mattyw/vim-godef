@@ -43,7 +43,9 @@ function! Godef(arg)
         let out=expand("%").strpart(out, x, len(out)-x)
         lexpr out
     else
-        if g:godef_split == 1
+        if g:godef_split == 0
+            call Jump(out)
+        elseif g:godef_split == 1
             split
         elseif g:godef_split == 2
             tabnew
@@ -53,6 +55,12 @@ function! Godef(arg)
         lexpr out
     end
     let &errorformat = old_errorformat
+endfunction
+
+function! Jump(fileline)
+    let file=split(a:fileline,":")[0]
+    let line=split(a:fileline,":")[1]
+    execute "edit +" . line . " " . file
 endfunction
 
 autocmd FileType go nnoremap <buffer> gd :call GodefUnderCursor()<cr>
